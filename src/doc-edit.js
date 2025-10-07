@@ -79,6 +79,13 @@ export class DocEditor extends LitElement {
     this._updateContent(e, path);
   }
 
+  _handPaste(e, path) {
+    e.preventDefault();
+    const plainText = e.clipboardData.getData("text/plain");
+    const result = updateContent(this.source)(plainText)([...path, "text"]);
+    this.dispatchEvent(new CustomEvent("change-item", { detail: { result }, bubbles: true, composed: true }));
+  }
+
   //產生輸入區,不準有html標籤
   _generateInput(text, path) {
     return html`
@@ -88,6 +95,7 @@ export class DocEditor extends LitElement {
         @focusin=${this._handleFocusIn}
         @focusout=${(e) => this._handleFocusOut(e, path)}
         @keydown=${this._handleKeyDown}
+        @paste=${(e) => this._handPaste(e, path)}
       >
         ${text}
       </div>
@@ -103,13 +111,15 @@ export class DocEditor extends LitElement {
 
   //更新項目內容
   _updateContent(e, path) {
-    pipe(updateContent(this.source)(e.srcElement.innerHTML),
-    (result)=>{
-      e.srcElement.innerHTML = convert(e.srcElement.innerHTML, { wordwrap: 130 }).replace(/[\r\n]/g, "");
-      return result;
-    },
-    (result) =>
-      this.dispatchEvent(new CustomEvent("change-item", { detail: { result }, bubbles: true, composed: true }))
+    pipe(
+      updateContent(this.source)(e.srcElement.innerHTML),
+      (result) => {
+        //e.srcElement.innerHTML = convert(e.srcElement.innerHTML, { wordwrap: 130 }).replace(/[\r\n]/g, "");
+
+        return result;
+      },
+      (result) =>
+        this.dispatchEvent(new CustomEvent("change-item", { detail: { result }, bubbles: true, composed: true }))
     )([...path, "text"]);
   }
 
@@ -147,7 +157,7 @@ export class DocEditor extends LitElement {
   _generateContent(item, paths, degree, index) {
     const style = { marginLeft: "0px", "list-style-type": `'${docItemNums[degree][index]}'` };
     return html`
-      <li data-degree=${degree} class="content-item" style=${styleMap(style)}>
+      <li data-degree=${degree} style=${styleMap(style)}>
         <div style="padding:3px">
           ${this._generateInput(item.text, [...paths, index])} ${this._generateCommand([...paths, index])}
         </div>
@@ -184,9 +194,6 @@ export class DocEditor extends LitElement {
       </li>
     `;
   }
-
-
-
 }
 
 customElements.define("doc-editor", DocEditor);
