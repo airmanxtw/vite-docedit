@@ -277,7 +277,7 @@ ${"".padEnd(t)}${"^".repeat(r)}`}function s2(e){return a2(i2,e)}function It(e){i
           <button @click=${u=>this._appendItem(t)} ?disabled=${r}>新增子分項</button>
           <button @click=${u=>this._deleteItem(t)}>刪除</button>
         </div>
-      `)(rt(this.source).getIn([...t,"items"]))}_generateContent(t,r,u,n){const i={marginLeft:"0px","list-style-type":`'${qa[u][n]}'`};return u<this.maxDegree?qt`
+      `)(rt(this.source).getIn([...t,"items"]))}_generateContent(t,r,u,n){const i={marginLeft:"0px","list-style-type":`'${qa[u][n]}'`};return u<this.maxDegree?qt`         
           <li data-degree=${u} style=${f0(i)}>
             <div style="padding:3px">
               <div-input

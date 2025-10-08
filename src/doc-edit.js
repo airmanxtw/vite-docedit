@@ -156,7 +156,7 @@ export class DocEditor extends LitElement {
   _generateContent(item, paths, degree, index) {
     const style = { marginLeft: "0px", "list-style-type": `'${docItemNums[degree][index]}'` };
     return degree < this.maxDegree
-      ? html`
+      ? html`         
           <li data-degree=${degree} style=${styleMap(style)}>
             <div style="padding:3px">
               <div-input
