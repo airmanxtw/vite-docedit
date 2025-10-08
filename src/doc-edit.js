@@ -82,32 +82,6 @@ export class DocEditor extends LitElement {
     e.srcElement.parentElement.querySelector(".command").classList.remove("hidden");
   }
 
-  _handleFocusOut(e, path) {
-    this._updateContent(e, path);
-  }
-
-  _handPaste(e, path) {
-    e.preventDefault();
-    const plainText = e.clipboardData.getData("text/plain");
-    const result = updateContent(this.source)(plainText)([...path, "text"]);
-    this.dispatchEvent(new CustomEvent("change-item", { detail: { result }, bubbles: true, composed: true }));
-  }
-
-  //產生輸入區,不準有html標籤
-  _generateInput(text, path) {
-    return html`
-      <div
-        contenteditable="plaintext-only"
-        style="padding:3px"
-        @focusin=${this._handleFocusIn}
-        @focusout=${(e) => this._handleFocusOut(e, path)}
-        @keydown=${this._handleKeyDown}
-      >
-        ${text}
-      </div>
-    `;
-  }
-
   //刪除項目
   _deleteItem(path) {
     pipe(deleteItem(this.source), (result) =>
@@ -156,7 +130,7 @@ export class DocEditor extends LitElement {
   _generateContent(item, paths, degree, index) {
     const style = { marginLeft: "0px", "list-style-type": `'${docItemNums[degree][index]}'` };
     return degree < this.maxDegree
-      ? html`         
+      ? html`
           <li data-degree=${degree} style=${styleMap(style)}>
             <div style="padding:3px">
               <div-input
@@ -164,7 +138,7 @@ export class DocEditor extends LitElement {
                 .text=${item.text}
                 @focus-out=${(e) => this._updateContent(e.detail.innerText, [...paths, index])}
               ></div-input>
-              ${this.contenteditable ? this._generateCommand([...paths, index]) : ''}
+              ${this.contenteditable ? this._generateCommand([...paths, index]) : ""}
             </div>
             ${!!item.items && item.items.length > 0
               ? html`
