@@ -90,15 +90,12 @@ export class DocEditor extends LitElement {
   _generateInput(text, path) {
     return html`
       <div
-        contenteditable
+        contenteditable="plaintext-only"
         style="padding:3px"
         @focusin=${this._handleFocusIn}
         @focusout=${(e) => this._handleFocusOut(e, path)}
-        @keydown=${this._handleKeyDown}
-        @paste=${(e) => this._handPaste(e, path)}
-      >
-        ${text}
-      </div>
+        @keydown=${this._handleKeyDown}        
+      >${text}</div>
     `;
   }
 
@@ -112,12 +109,7 @@ export class DocEditor extends LitElement {
   //更新項目內容
   _updateContent(e, path) {
     pipe(
-      updateContent(this.source)(e.srcElement.innerHTML),
-      (result) => {
-        //e.srcElement.innerHTML = convert(e.srcElement.innerHTML, { wordwrap: 130 }).replace(/[\r\n]/g, "");
-
-        return result;
-      },
+      updateContent(this.source)(e.srcElement.innerHTML),     
       (result) =>
         this.dispatchEvent(new CustomEvent("change-item", { detail: { result }, bubbles: true, composed: true }))
     )([...path, "text"]);
