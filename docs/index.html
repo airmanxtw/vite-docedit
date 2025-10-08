@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>vite-docedit</title>
+    <!-- <link rel="stylesheet" href="./src/index.css" /> -->
+    <script type="module" crossorigin src="/assets/index-kG0VtPGS.js"></script>
+  </head>
+  <body>
+    <button>切換唯讀</button>
+    <doc-editor contenteditable></doc-editor>
+    <div id="json-output" style="white-space: pre-wrap; background: #fff; padding: 1rem; border: 1px solid #ccc"></div>
+    <script>
+      let source = [
+        {
+          text: "臺南市政府為推動青年公共參與，辦理「臺南青年審議民主行動計畫」對外徵件，由青年組隊提案辦理如公民咖啡館或願景工作坊等審議討論活動，入選五組青年團隊於今年8至9月辦理審議工作坊。論壇中青年團隊將發表在地審議成果，搭建青年團隊發聲舞台，展現青年對地方議題的創新解方與公共參與的影響力，以地方實踐案例開啟青年與政策的對話大門。",
+        },
+        {
+          text: "本次論壇簡要說明如下：",
+          items: [
+            {
+              text: "時間：114年10月21日(星期二)下午1時10分至3時00分。",
+            },
+            {
+              text: "地點：成功大學成功校區三系館鋼構區3樓A1302演講廳。",
+            },
+            {
+              text: "論壇分享團隊、主題及與談人：",
+              items: [
+                {
+                  text: "創生組：",
+                  items: [
+                    { text: "「漫活淺山×惡地再生」團隊：青春返鄉：左鎮農遊新藍圖上線！" },
+                    { text: "「哩賀！新化佇遮」團隊：老街美食再升級，走一趟就愛上的新化新風貌。" },
+                    { text: "「鄉間果子」團隊：老街復興ING：共融社區的溫度與新生。" },
+                    { text: "與談人：南漂仔聚匯總部創辦人張舜雅。" },
+                  ],
+                },
+                {
+                  text: "原民組：",
+                  items: [
+                    { text: "「歸途拔馬青年小組」團隊：原民圖像密碼：守護文化的創意與底線。" },
+                    { text: "與談人：成大法律系王毓正教授。" },
+                  ],
+                },
+                {
+                  text: "交通組：",
+                  items: [
+                    { text: "「孔乙己哇與沒有麗莎」團隊：南鐵地下化後的新想像：綠色運具 × 科技出行。" },
+                    { text: "與談人：成大建築系盧紀邦教授。" },
+                  ],
+                },
+              ],
+            },
+            {
+              text: "報名網址：https://forms.gle/WUc6qtqjjnG4Dhj86，名額有限，額滿為止。",
+            },
+            {
+              text: "欲申請公務人員終身學習時數者，除了於本案報名網址報名，同時請至公務人員終身學習網(https://lifelonglearn.dgpa.gov.tw/search.aspx#)完成報名程序，並於活動會場完成紙本簽到。",
+            },
+          ],
+        },
+      ];
+      document.querySelector("doc-editor").source = source;
+      document.getElementById("json-output").textContent = JSON.stringify(source);
+      document.addEventListener("change-item", (e) => {
+        console.log(e.detail.result);
+        document.querySelector("doc-editor").source = e.detail.result;
+        document.getElementById("json-output").textContent = JSON.stringify(e.detail.result);
+      });
+    </script>
+  </body>
+</html>
