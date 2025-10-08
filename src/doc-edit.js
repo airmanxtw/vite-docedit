@@ -7,6 +7,7 @@ import { convert } from "html-to-text";
 import { docstyle } from "./style/docstyle.js";
 import { docItemNums } from "./api/docItemNums.js";
 import { classMap } from "lit/directives/class-map.js";
+import { DivInput } from "./components/div-input.js";
 import * as R from "ramda";
 const { pipe, ifElse, isEmpty, identity, indexOf } = R;
 
@@ -14,6 +15,9 @@ const { hello, getPath, deleteItem, updateContent, insertItem } = api();
 export class DocEditor extends LitElement {
   static properties = {
     source: { type: Array },
+    maxDegree: { type: Number },
+    maxItems: { type: Number },
+    contenteditable: { type: Boolean },
   };
 
   // Define scoped styles right with your component, in plain CSS
@@ -54,6 +58,9 @@ export class DocEditor extends LitElement {
     super();
     // Declare reactive properties
     this.source = [];
+    this.maxDegree = 6;
+    this.maxItems = 30;
+    this.contenteditable = false;
   }
 
   // Render the UI as a function of component state
@@ -94,8 +101,10 @@ export class DocEditor extends LitElement {
         style="padding:3px"
         @focusin=${this._handleFocusIn}
         @focusout=${(e) => this._handleFocusOut(e, path)}
-        @keydown=${this._handleKeyDown}        
-      >${text}</div>
+        @keydown=${this._handleKeyDown}
+      >
+        ${text}
+      </div>
     `;
   }
 
@@ -107,11 +116,9 @@ export class DocEditor extends LitElement {
   }
 
   //更新項目內容
-  _updateContent(e, path) {
-    pipe(
-      updateContent(this.source)(e.srcElement.innerHTML),     
-      (result) =>
-        this.dispatchEvent(new CustomEvent("change-item", { detail: { result }, bubbles: true, composed: true }))
+  _updateContent(innerHTML, path) {
+    pipe(updateContent(this.source)(innerHTML), (result) =>
+      this.dispatchEvent(new CustomEvent("change-item", { detail: { result }, bubbles: true, composed: true }))
     )([...path, "text"]);
   }
 
@@ -148,22 +155,29 @@ export class DocEditor extends LitElement {
 
   _generateContent(item, paths, degree, index) {
     const style = { marginLeft: "0px", "list-style-type": `'${docItemNums[degree][index]}'` };
-    return html`
-      <li data-degree=${degree} style=${styleMap(style)}>
-        <div style="padding:3px">
-          ${this._generateInput(item.text, [...paths, index])} ${this._generateCommand([...paths, index])}
-        </div>
-        ${!!item.items && item.items.length > 0
-          ? html`
-              <ol>
-                ${item.items.map(
-                  (subItem, i) => html`${this._generateContent(subItem, [...paths, index, "items"], degree + 1, i)}`
-                )}
-              </ol>
-            `
-          : null}
-      </li>
-    `;
+    return degree < this.maxDegree
+      ? html`
+          <li data-degree=${degree} style=${styleMap(style)}>
+            <div style="padding:3px">
+              <div-input
+                ?contenteditable=${this.contenteditable}
+                .text=${item.text}
+                @focus-out=${(e) => this._updateContent(e.detail.innerText, [...paths, index])}
+              ></div-input>
+              ${this.contenteditable ? this._generateCommand([...paths, index]) : ''}
+            </div>
+            ${!!item.items && item.items.length > 0
+              ? html`
+                  <ol>
+                    ${item.items.map(
+                      (subItem, i) => html`${this._generateContent(subItem, [...paths, index, "items"], degree + 1, i)}`
+                    )}
+                  </ol>
+                `
+              : null}
+          </li>
+        `
+      : html``;
   }
 
   getHtml() {

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>vite-docedit</title>
+    <!-- <link rel="stylesheet" href="./src/index.css" /> -->
+
+    <script type="module" crossorigin src="./assets/index-kG0VtPGS.js"></script>
+  </head>
+  <body>
+    <doc-editor contenteditable></doc-editor>
+    <div id="json-output" style="white-space: pre-wrap; background: #fff; padding: 1rem; border: 1px solid #ccc"></div>    
+    <script>
+      let source = [
+        { text: "修正機關：衛生福利部。" },
+        { text: "修正依據：食品安全衛生管理法第三十八條。" },
+        {
+          text: "對於本公告內容有任何意見或修正建議者，請於本公告刊登公報之次日起14日內陳述意見或洽詢：",
+          items: [{ text: "承辦單位：衛生福利部食品藥物管理署" }, { text: "地址：臺北市南港區昆陽街161-2號" }],
+        },
+      ];
+      document.querySelector("doc-editor").source = source;
+      document.getElementById("json-output").textContent = JSON.stringify(source);
+      document.addEventListener("change-item", (e) => {
+        console.log(e.detail.result);
+        document.querySelector("doc-editor").source = e.detail.result;
+        document.getElementById("json-output").textContent = JSON.stringify(e.detail.result);
+      });
+    </script>
+  </body>
+</html>
