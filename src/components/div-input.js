@@ -29,12 +29,17 @@ export class DivInput extends LitElement {
     }
   }
 
+  _handleFocusIn(e){
+    this.dispatchEvent(new CustomEvent("focus-in", { detail: {  }, bubbles: true, composed: true }));
+  }
+
   // Render the UI as a function of component state
   render() {
     return html`<div
       contenteditable=${this.contenteditable ? "plaintext-only" : "false"}
       style="padding:3px"
       @focusout=${(e) => this._handleFocusOut(e.srcElement.innerHTML)}
+      @focusin=${this._handleFocusIn}
       @keydown=${this._handleKeyDown}
     >${this.text}</div>`;
   }
