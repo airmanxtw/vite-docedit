@@ -69,6 +69,12 @@ export class DocEditor extends LitElement {
     this._paths = [];
   }
 
+  firstUpdated() {       
+    this.dispatchEvent(
+        new CustomEvent("change-item", { detail: { result:this.source, html: this.getHtml(this.source) }, bubbles: true, composed: true })
+      )
+  }
+
   // Render the UI as a function of component state
   render() {
     return html`
@@ -87,21 +93,25 @@ export class DocEditor extends LitElement {
   _handleFocusIn(e, currentPaths, currentDegree, currentIndex) {
     //e.srcElement.parentElement.querySelector(".command").classList.remove("hidden");
     this._degree = currentDegree;
-    this._index = currentIndex;    
+    this._index = currentIndex;
     this._paths = [...currentPaths];
   }
 
   //刪除項目
   _deleteItem(path) {
     pipe(deleteItem(this.source), (result) =>
-      this.dispatchEvent(new CustomEvent("change-item", { detail: { result }, bubbles: true, composed: true }))
+      this.dispatchEvent(
+        new CustomEvent("change-item", { detail: { result, html: this.getHtml(result)  }, bubbles: true, composed: true })
+      )
     )(path);
   }
 
   //更新項目內容
   _updateContent(innerHTML, path) {
     pipe(updateContent(this.source)(innerHTML), (result) =>
-      this.dispatchEvent(new CustomEvent("change-item", { detail: { result }, bubbles: true, composed: true }))
+      this.dispatchEvent(
+        new CustomEvent("change-item", { detail: { result, html: this.getHtml(result)  }, bubbles: true, composed: true })
+      )
     )([...path, "text"]);
   }
 
@@ -114,7 +124,9 @@ export class DocEditor extends LitElement {
       },
       insertItem(this.source)(shift),
       (result) =>
-        this.dispatchEvent(new CustomEvent("change-item", { detail: { result }, bubbles: true, composed: true }))
+        this.dispatchEvent(
+          new CustomEvent("change-item", { detail: { result, html: this.getHtml(result)  }, bubbles: true, composed: true })
+        )
     )(path);
   }
 
@@ -123,7 +135,9 @@ export class DocEditor extends LitElement {
     pipe(
       (p) => List(this.source).setIn([...p, "items"], [{ text: "新分項" }]),
       (result) =>
-        this.dispatchEvent(new CustomEvent("change-item", { detail: { result }, bubbles: true, composed: true }))
+        this.dispatchEvent(
+          new CustomEvent("change-item", { detail: { result, html: this.getHtml(result)  }, bubbles: true, composed: true })
+        )
     )(path);
   }
 
@@ -143,7 +157,7 @@ export class DocEditor extends LitElement {
   }
 
   _generateContent(item, paths, degree, index) {
-    const style = { marginLeft: "0px", "list-style-type": `'${docItemNums[degree][index]}'` };   
+    const style = { marginLeft: "0px", "list-style-type": `'${docItemNums[degree][index]}'` };
     return degree < this.maxDegree
       ? html`
           <li data-degree=${degree} style=${styleMap(style)}>
@@ -172,10 +186,11 @@ export class DocEditor extends LitElement {
       : html``;
   }
 
-  getHtml() {
+ 
+  getHtml(s) {    
     return `
       <ol>
-        ${this.source.reduce((acc, item, index) => acc + this._getHtml(item, 0, index), "")}          
+        ${s.reduce((acc, item, index) => acc + this._getHtml(item, 0, index), "")}          
       </ol>
     `;
   }
@@ -192,6 +207,7 @@ export class DocEditor extends LitElement {
       </li>
     `;
   }
+   
 }
 
 customElements.define("doc-editor", DocEditor);
