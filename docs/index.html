@@ -5,14 +5,16 @@
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>vite-docedit</title>
-    <!-- <link rel="stylesheet" href="./src/index.css" /> -->
-
-    <script type="module" crossorigin src="./assets/index-DxWu-l0n.js"></script>
+    <!-- <link rel="stylesheet" href="./src/index.css" /> -->
+    <script type="module" crossorigin src="/assets/index-Ln93YZjr.js"></script>
   </head>
   <body>
-    <button id="changeMode">切換唯讀</button>
+    <button id="changeMode">切換唯讀</button>    
     <doc-editor contenteditable></doc-editor>
+    <div>json:</div>
     <div id="json-output" style="white-space: pre-wrap; background: #fff; padding: 1rem; border: 1px solid #ccc"></div>
+    <div style="margin-top: 5px;">html:</div>
+    <div id="html-output" style="white-space: pre-wrap; background: #fff; padding: 1rem; border: 1px solid #ccc;"></div>
     <script>
       let source = [
         {
@@ -66,11 +68,12 @@
       ];
       let mode = true;
       document.querySelector("doc-editor").source = source;
-      document.getElementById("json-output").textContent = JSON.stringify(source);
+      document.getElementById("json-output").textContent = JSON.stringify(source);      
       document.addEventListener("change-item", (e) => {
-        console.log(e.detail.result);
+        console.log(e.detail.result);        
         document.querySelector("doc-editor").source = e.detail.result;
-        document.getElementById("json-output").textContent = JSON.stringify(e.detail.result);
+        document.getElementById("json-output").textContent = JSON.stringify(e.detail.result);        
+        document.getElementById("html-output").textContent = e.detail.html;
       });
       document.getElementById("changeMode").addEventListener("click", () => {
         mode = !mode;
@@ -78,7 +81,7 @@
           ? document.querySelector("doc-editor").setAttribute("contenteditable", "true")
           : document.querySelector("doc-editor").removeAttribute("contenteditable");
        
-      });
+      });    
     </script>
   </body>
 </html>

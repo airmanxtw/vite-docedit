@@ -257,11 +257,11 @@ ${"".padEnd(t)}${"^".repeat(r)}`}function a2(e){return i2(n2,e)}function It(e){i
         background-color: lightblue;
         border-style: none;
       }
-    `];constructor(){super(),this.source=[],this.maxDegree=6,this.maxItems=30,this.contenteditable=!1,this._degree=-1,this._index=-1,this._paths=[]}render(){return zt`
+    `];constructor(){super(),this.source=[],this.maxDegree=6,this.maxItems=30,this.contenteditable=!1,this._degree=-1,this._index=-1,this._paths=[]}firstUpdated(){this.dispatchEvent(new CustomEvent("change-item",{detail:{result:this.source,html:this.getHtml(this.source)},bubbles:!0,composed:!0}))}render(){return zt`
       <ol>
         ${this.source.map((t,r)=>zt`${this._generateContent(t,[],0,r)}`)}
       </ol>
-    `}_handleKeyDown(t){t.key==="Enter"&&t.preventDefault()}_handleFocusIn(t,r,u,n){this._degree=u,this._index=n;debugger;this._paths=[...r]}_deleteItem(t){Xe(om(this.source),r=>this.dispatchEvent(new CustomEvent("change-item",{detail:{result:r},bubbles:!0,composed:!0})))(t)}_updateContent(t,r){Xe(cm(this.source)(t),u=>this.dispatchEvent(new CustomEvent("change-item",{detail:{result:u},bubbles:!0,composed:!0})))([...r,"text"])}_insertItem(t,r){Xe(u=>(this._index+=r===0?1:0,u),fm(this.source)(r),u=>this.dispatchEvent(new CustomEvent("change-item",{detail:{result:u},bubbles:!0,composed:!0})))(t)}_appendItem(t){Xe(r=>G(this.source).setIn([...r,"items"],[{text:"新分項"}]),r=>this.dispatchEvent(new CustomEvent("change-item",{detail:{result:r},bubbles:!0,composed:!0})))(t)}_generateCommand(t){return Xe(r=>!G(r).isEmpty(),r=>zt`
+    `}_handleKeyDown(t){t.key==="Enter"&&t.preventDefault()}_handleFocusIn(t,r,u,n){this._degree=u,this._index=n,this._paths=[...r]}_deleteItem(t){Xe(om(this.source),r=>this.dispatchEvent(new CustomEvent("change-item",{detail:{result:r,html:this.getHtml(r)},bubbles:!0,composed:!0})))(t)}_updateContent(t,r){Xe(cm(this.source)(t),u=>this.dispatchEvent(new CustomEvent("change-item",{detail:{result:u,html:this.getHtml(u)},bubbles:!0,composed:!0})))([...r,"text"])}_insertItem(t,r){Xe(u=>(this._index+=r===0?1:0,u),fm(this.source)(r),u=>this.dispatchEvent(new CustomEvent("change-item",{detail:{result:u,html:this.getHtml(u)},bubbles:!0,composed:!0})))(t)}_appendItem(t){Xe(r=>G(this.source).setIn([...r,"items"],[{text:"新分項"}]),r=>this.dispatchEvent(new CustomEvent("change-item",{detail:{result:r,html:this.getHtml(r)},bubbles:!0,composed:!0})))(t)}_generateCommand(t){return Xe(r=>!G(r).isEmpty(),r=>zt`
         <div contenteditable="false" class="command">
           <button @click=${u=>this._insertItem(t,0)}>新增上方分項</button>
           <button @click=${u=>this._insertItem(t,1)}>新增下方分項</button>
@@ -285,9 +285,9 @@ ${"".padEnd(t)}${"^".repeat(r)}`}function a2(e){return i2(n2,e)}function It(e){i
                   </ol>
                 `:null}
           </li>
-        `:zt``}getHtml(){return`
+        `:zt``}getHtml(t){return`
       <ol>
-        ${this.source.reduce((t,r,u)=>t+this._getHtml(r,0,u),"")}          
+        ${t.reduce((r,u,n)=>r+this._getHtml(u,0,n),"")}          
       </ol>
     `}_getHtml(t,r,u){return`
       <li style="margin-left: 0px; list-style-type: '${qa[r][u]}'">
